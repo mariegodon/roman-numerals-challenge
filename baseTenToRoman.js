@@ -2,121 +2,74 @@ var prompt = require("prompt");
 
 prompt.start();
 
+function pushNumerals(length, userNumberArr, roman, position, five, ten, ones) {
+    if (userNumberArr[length - position] >= 9) {
+        roman.push(ones + ten);
+    }
+    else if (userNumberArr[length - position] >= 5) {
+        roman.push(five);
+        if (userNumberArr[length - position] >= 6) {
+            pushOnes(length, userNumberArr, roman, position, ones, 5);
+        }
+    }
+    else if (userNumberArr[length - position] >= 1) {
+        if (Number(userNumberArr[length - position]) === 4) {
+            roman.push(ones + five);
+        }
+        else {
+            pushOnes(length, userNumberArr, roman, position, ones, 0);
+        }
+    }
+}
+
+function pushOnes(length, userNumberArr, roman, position, ones, i) {
+    while (i < userNumberArr[length - position]) {
+        roman.push(ones);
+        i++
+    }
+}
+
 function baseTenToRoman() {
 
     var roman = [];
 
     prompt.get(["Enter a number between 1 and 5000"], function(err, result) {
+
         var userNumber = result["Enter a number between 1 and 5000"];
+
         if (userNumber < 1 || userNumber > 5000) {
             console.log("Pick a valid number!");
             baseTenToRoman();
         }
-        else if (userNumber === 5000) {
+
+        else if (Number(userNumber) === 5000) {
             console.log("5000 in roman numerals is V");
             return;
         }
+
         else {
             var userNumberArr = userNumber.split("");
             var length = userNumberArr.length;
-            //console.log(userNumberArr);
 
             //thousands
             if (userNumberArr.length === 4) {
-                var i = 0;
-                while (i < userNumberArr[0]) {
-                    roman.push("M");
-                    i++;
-                }
-                console.log(roman);
+                pushOnes(length, userNumberArr, roman, 4, "M", 0);
             }
+
             //hundreds
             if (userNumberArr.length >= 3) {
-                i = 0;
-                if (userNumberArr[length - 3] >= 9) {
-                    roman.push("CM");
-                }
-                else if (userNumberArr[length - 3] >= 5) {
-                    roman.push("D");
-                    if (userNumber[length - 3] >= 6) {
-                        i = 5;
-                        while (i < userNumber[length - 3]) {
-                            roman.push("C");
-                            i++;
-                        }
-                    }
-                }
-                else if (userNumberArr[length - 3] >= 1) {
-                    if (Number(userNumberArr[length - 3]) === 4) {
-                        roman.push("CD");
-                    }
-                    else {
-                        i = 0;
-                        while (i < userNumberArr[length - 3]) {
-                            roman.push("C");
-                            i++
-                        }
-                    }
-                }
+                pushNumerals(length, userNumberArr, roman, 3, "D", "M", "C");
             }
+
             //tens
             if (userNumberArr.length >= 2) {
-                if (Number(userNumber[length - 2]) === 9) {
-                    roman.push("XC");
-                }
-                else if (userNumber[length - 2] >= 5) {
-                    roman.push("L");
-                    if (userNumber[length - 2] >= 6) {
-                        i = 5;
-                        while (i < userNumber[length - 2]) {
-                            roman.push("X");
-                            i++;
-                        }
-                    }
-                }
-                else if (userNumber[length - 2] >= 1) {
-                    if (Number(userNumber[length - 2]) === 4) {
-                        roman.push("XL");
-                    }
-                    else {
-                        i = 0;
-                        while (i < userNumberArr[length - 2]) {
-                            roman.push("X");
-                            i++;
-                        }
-                    }
-                }
+                pushNumerals(length, userNumberArr, roman, 2, "L", "C", "X");
             }
-
 
             //ones
-            if (Number(userNumber[length - 1]) === 9) {
-                roman.push("IX");
-            }
-            else if (userNumber[length - 1] >= 5) {
-                roman.push("V");
-                if (userNumber[length - 1] >= 6) {
-                    i = 5;
-                    while (i < userNumber[length - 1]) {
-                        roman.push("I");
-                        i++;
-                    }
-                }
-            }
-            else if (userNumber[length - 1] >= 1) {
-                if (Number(userNumber[length - 1]) === 4) {
-                    roman.push("IV");
-                }
-                else {
-                    i = 0;
-                    while (i < userNumberArr[length - 1]) {
-                        roman.push("I");
-                        i++;
-                    }
-                }
-            }
+            pushNumerals(length, userNumberArr, roman, 1, "V", "X", "I");
         }
-        console.log(roman.join(""));
+        console.log(userNumber + " in roman numerals is " + roman.join(""));
     });
 }
 
